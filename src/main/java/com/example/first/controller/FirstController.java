@@ -91,15 +91,20 @@ public class FirstController {
             articleRepository.save(target);
         }
 
-        return "redirect:/articles";
+        return "redirect:/articles/" + id;
     }
 
 
     @PostMapping("/articles/{id}/delete")
-    public String deletepage(Model model)
+    public String deletepage(@PathVariable Long id )
     {
-        model.addAttribute("username", "new");
-        return "new";
+        log.info("삭제요망");
+        Article target;
+        target= articleRepository.findById(id).orElse(null);
+        if (target != null){
+        articleRepository.delete(target);
+        }
+        return "redirect:/articles";
     }
 
 }
