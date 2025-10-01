@@ -58,9 +58,12 @@ public class FirstController {
     }
 
     @GetMapping("/articles/{id}/edit")
-    public String editpage(Model model)
+    public String editpage(@PathVariable Long id, Model model)
     {
-        model.addAttribute("username", "new");
+        log.info("id =" + id);
+        Article articleEntity = articleRepository.findById(id).orElse(null);
+        model.addAttribute("article", articleEntity);
+
         return "edit";
     }
 
@@ -76,10 +79,19 @@ public class FirstController {
     }
 
     @PostMapping("/articles/{id}/edit")
-    public String reeditpage(Model model)
+    public String reeditpage(@PathVariable Long id,ArticleForm form)
     {
-        model.addAttribute("username", "new");
-        return "new";
+        System.out.println(form.toString());
+        Article target;
+        target= articleRepository.findById(id).orElse(null);
+        if (target != null){
+            target.setTitle(form.getTitle());
+            target.setContent(form.getContent());
+            target.setAuthor(form.getAuthor());
+            articleRepository.save(target);
+        }
+
+        return "redirect:/articles";
     }
 
 
